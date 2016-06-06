@@ -2,7 +2,7 @@
 Repository for holding class work for CMPS 4443
 
 Your image (it must be between 200x200 and 500x500 or similar)
-![Mypic](https://yt3.ggpht.com/-h953k2uhHJY/AAAAAAAAAAI/AAAAAAAAAAA/nUrDxJF0xM8/s900-c-k-no-rj-c0xffffff/photo.jpg)
+![Mypic](https://avatars3.githubusercontent.com/u/8549437?v=3&s=260)
 
 Lewis Confair
 
