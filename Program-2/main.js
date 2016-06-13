@@ -33,7 +33,7 @@ var mainState = {
 		//set animations. walk is player walk, dead is death throws that 
 		//aim am still working on implementing
 		this.player.animations.add('walk', [1, 2, 3, 4, 5, 6], 12, true);
-		//this.player.animations.add('dead', [13, 14, 15, 16, 17], 3, false);
+		//this.player.animations.add('dead', [13, 14, 15, 16, 17], 12, false);
 
         this.createWorld();
 		
