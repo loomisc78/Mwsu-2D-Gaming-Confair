@@ -42,6 +42,7 @@ var menuState = {
     },
 	
     start: function() {
+		game.global.score = 0;
         // Start the actual game
         game.state.start('play');
     },
