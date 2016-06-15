@@ -9,7 +9,7 @@ var loadState = {
         game.load.setPreloadSprite(progressBar);
         
 		// Load all our assets
-        game.load.spritesheet('player', 'assets/monkey.png', 49, 42, 17);
+        game.load.spritesheet('player', 'assets/monkey.png', 49, 42);
         game.load.image('wallV', 'assets/wallVertical.png');
         game.load.image('wallH', 'assets/wallHorizontal.png');
         game.load.image('token', 'assets/banana-small.png');

@@ -31,6 +31,7 @@ var playState = {
 		//aim am still working on implementing
 		this.player.animations.add('walk', [1, 2, 3, 4, 5, 6], 12, true);
 		this.player.animations.add('dead', [13, 14, 15, 16, 17], 8, false);
+		
 
         this.createWorld();
 		
@@ -83,22 +84,22 @@ var playState = {
 
     update: function() {
 		//if time remaining manage collisions, move player, and update the timer
-		if (this.gameOn){
-			game.physics.arcade.collide(this.player, this.walls);
-			game.physics.arcade.collide(this.barrels, this.walls);
-			game.physics.arcade.collide(this.barrels, this.barrels);
-			game.physics.arcade.overlap(this.player, this.token, 
-										this.takeToken, null, this);
-			game.physics.arcade.overlap(this.player, this.barrels, 
-										this.playerDie, null, this);
+	
+		game.physics.arcade.collide(this.player, this.walls);
+		game.physics.arcade.collide(this.barrels, this.walls);
+		game.physics.arcade.collide(this.barrels, this.barrels);
+		game.physics.arcade.overlap(this.player, this.token, 
+									this.takeToken, null, this);
+		game.physics.arcade.overlap(this.player, this.barrels, 
+									this.playerDie, null, this);
 
-			this.movePlayer(); 
-			this.updateTimer();
+		this.movePlayer(); 
+		this.updateTimer();
 
-			if (!this.player.inWorld) {
-				this.playerDie();
-			}
+		if (!this.player.inWorld) {
+			this.playerDie();
 		}
+		
 		
     },//end update*******************************************************
 
@@ -243,13 +244,12 @@ var playState = {
 		//set walls as immovable
         this.walls.setAll('body.immovable', true);
     },//end createWorld**************************************************
-
-    playerDie: function() {
-		//this.player.animations.play('dead', 8, true);
-		
-		
+	
+    playerDie: function() {	
+		console.log(this.player);
 		if (!this.player.inWorld){
 			this.player.kill();
+			this.deadSound.play();
 			var killTime = 90;
 			// Flash the color white for 300ms
 			game.camera.flash(0xffffff, killTime);
@@ -259,29 +259,28 @@ var playState = {
 			
 		}
 		else {
-			this.player.kill();
+			this.player.kill();	
+			this.deadSound.play();
 			// Set the position of the emitter on top of the player
 			this.emitter.x = this.player.x;
 			this.emitter.y = this.player.y;
 			// Start the emitter by exploding 15 particles that will live 800ms
 			this.emitter.start(true, 800, null, 15);
-		}
-		
-		// Play the sound and go to the menu state
-		this.deadSound.play();
+		}		
+
 		this.music.stop();
-		
-		
+				
 		// Call the 'startMenu' function in 1000ms
 		game.time.events.add(1000, this.startMenu, this);
 		
 		//increment and display new death total
 		// this.death ++;
-		// this.deathLabel.text = 'Deaths: ' + this.death;
+		// this.deathLabel.text = 'Deaths: ' + this.death;+ this.death;
     },
 	
+
+	
 	startMenu: function() {
-		
 		game.state.start('menu');
 	},
 	
