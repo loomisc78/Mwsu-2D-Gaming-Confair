@@ -315,7 +315,7 @@ var playState = {
     
     addMobileInputs: function() {
         // Add the jump button
-        var jumpButton = game.add.sprite(3380, 310, 'jumpButton');
+        var jumpButton = game.add.sprite(380, 310, 'jumpButton');
         jumpButton.inputEnabled = true;
         jumpButton.alpha = 0.5;
         

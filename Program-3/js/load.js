@@ -15,9 +15,9 @@ var loadState = {
 		game.load.image('pixel', 'assets/pixel.png');
 		game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
         
-        game.load.image('jumpButton', 'assets/jumpButton.png');
-        game.load.image('rightButton', 'assets/rightButton.png');
-        game.load.image('leftButton', 'assets/leftButton.png');
+        game.load.image('jumpButton', 'assets/uArrow.png');
+        game.load.image('rightButton', 'assets/rArrow.png');
+        game.load.image('leftButton', 'assets/lArrow.png');
 
 		// Load the tileset information
 		game.load.image('tileset', 'assets/jungle_set.png');
