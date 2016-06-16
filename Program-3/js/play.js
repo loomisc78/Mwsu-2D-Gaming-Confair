@@ -109,7 +109,7 @@ var playState = {
     movePlayer: function() {
 		//if key is pressed adjust velocity and animation accordingly 
 		//player.scale.x flips the animation towards direction of travel
-        if (this.wasd.left.isDown || this.cursor.left.isDown) {
+        if (this.wasd.left.isDown || Phaser.Keyboard.LEFT.isDown) {
             this.player.body.velocity.x = -200;
 			this.player.animations.play('walk');
 			this.player.scale.x = -1;
