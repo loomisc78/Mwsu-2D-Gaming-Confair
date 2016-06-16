@@ -1,8 +1,6 @@
 var playState = {
 	
     create: function() { 
-		//variable to control end game. set to false when time runs out
-		this.gameOn = true;
 		
 		//add sounds into the game
 		this.jumpSound = game.add.audio('jump');
@@ -19,7 +17,7 @@ var playState = {
 		this.left = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 		this.right = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 		this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		
+
         //create player
         this.player = game.add.sprite(game.width/2, game.height/2, 'player');
         this.player.anchor.setTo(0.5, 0.5);
@@ -42,7 +40,7 @@ var playState = {
 
 		//set create score, death, and timer labels and add to surface
         this.scoreLabel = game.add.text(30, 30,'Score: 0', 
-										{ font: '18px Arial', fill: '#ffffff'});
+										{ font: '18px Orbitron', fill: '#ffffff'});
         
 		// this.death = 0;
 		// this.deathLabel = game.add.text(360, 360, 'Deaths: 0', 
@@ -83,8 +81,7 @@ var playState = {
     },//end create*******************************************************
 
     update: function() {
-		//if time remaining manage collisions, move player, and update the timer
-	
+		
 		game.physics.arcade.collide(this.player, this.walls);
 		game.physics.arcade.collide(this.barrels, this.walls);
 		game.physics.arcade.collide(this.barrels, this.barrels);
@@ -246,7 +243,6 @@ var playState = {
     },//end createWorld**************************************************
 	
     playerDie: function() {	
-		console.log(this.player);
 		if (!this.player.inWorld){
 			this.player.kill();
 			this.deadSound.play();
@@ -299,7 +295,7 @@ var playState = {
 			game.add.text(game.width/2 - 60, game.height/2, 'GAME OVER', 
 						{ font: '18px Arial', fill: '#ffffff', align: 'center'});
 			console.log('GAME OVER');
-			this.gameOn = false;
+			
 			game.state.start('menu');
 		}
 	},

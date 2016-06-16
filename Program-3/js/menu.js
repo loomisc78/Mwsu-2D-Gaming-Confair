@@ -4,7 +4,7 @@ var menuState = {
         game.add.image(0, 0, 'sky');
         // Display the name of the game
         var nameLabel = game.add.text(game.width/2, -50, 'Monkey Dash', 
-									{ font: '50px Arial', fill: '#ffffff' });
+									{ font: '50px Orbitron', fill: '#ffffff' });
 		game.add.tween(nameLabel).to({y: 120}, 1000).easing(Phaser.Easing.Bounce.Out).start();
 		nameLabel.anchor.setTo(0.5, 0.5);
 		
@@ -28,12 +28,12 @@ var menuState = {
         // Show the score at the center of the screen
         var text = 'score: ' + game.global.score + '\nbest score: ' + localStorage.getItem('bestScore');
 		var scoreLabel = game.add.text(game.width/2, game.height/2, text, 
-						{ font: '25px Arial', fill: '#ffffff', align: 'center' });
+						{ font: '25px Orbitron', fill: '#ffffff', align: 'center' });
         scoreLabel.anchor.setTo(0.5, 0.5);
         // Explain how to start the game
         var startLabel = game.add.text(game.width/2, game.height-80,
             'press the up arrow key to start',
-            { font: '25px Arial', fill: '#ffffff' });
+            { font: '25px Orbitron', fill: '#ffffff' });
         startLabel.anchor.setTo(0.5, 0.5);
         // Create a new Phaser keyboard variable: the up arrow key
         // When pressed, call the 'start' function once

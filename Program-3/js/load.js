@@ -10,12 +10,14 @@ var loadState = {
         
 		// Load all our assets
         game.load.spritesheet('player', 'assets/monkey.png', 49, 42);
-        game.load.image('wallV', 'assets/wallVertical.png');
-        game.load.image('wallH', 'assets/wallHorizontal.png');
         game.load.image('token', 'assets/banana-small.png');
         game.load.spritesheet('barrel', 'assets/barrels.png', 36, 35);
 		game.load.image('pixel', 'assets/pixel.png');
 		game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);
+		
+		// Load the tileset information
+		game.load.image('tileset', 'assets/jungle_set.png');
+		game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
 		
 		// Sound when the player jumps
 		game.load.audio('jump', ['assets/jump.ogg', 'assets/jump.mp3']);
