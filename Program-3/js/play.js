@@ -315,7 +315,7 @@ var playState = {
     
     addMobileInputs: function() {
         // Add the jump button
-        var jumpButton = game.add.sprite(350, 240, 'jumpButton');
+        var jumpButton = game.add.sprite(3380, 310, 'jumpButton');
         jumpButton.inputEnabled = true;
         jumpButton.alpha = 0.5;
         
@@ -327,7 +327,7 @@ var playState = {
         this.moveRight = false;
 
         // Add the move left button
-        var leftButton = game.add.sprite(50, 240, 'leftButton');
+        var leftButton = game.add.sprite(30, 310, 'leftButton');
         leftButton.inputEnabled = true;
         leftButton.alpha = 0.5;
         leftButton.events.onInputOver.add(this.setLeftTrue, this);
@@ -336,7 +336,7 @@ var playState = {
         leftButton.events.onInputUp.add(this.setLeftFalse, this);
 
         // Add the move right button
-        var rightButton = game.add.sprite(130, 240, 'rightButton');
+        var rightButton = game.add.sprite(110, 310, 'rightButton');
         rightButton.inputEnabled = true;
         rightButton.alpha = 0.5;
         rightButton.events.onInputOver.add(this.setRightTrue, this);
