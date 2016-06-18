@@ -13,9 +13,10 @@ SpaceHipster.Game.prototype = {
 
     //create player
     this.player = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'playership');
-    this.player.scale.setTo(2);
-    this.player.animations.add('fly', [0, 1, 2, 3], 5, true);
-    this.player.animations.play('fly');
+    this.player.scale.setTo(0.5);
+	this.player.anchor.setTo(0.5, 0.5);
+    // this.player.animations.add('fly', [0, 1, 2, 3], 5, true);
+    // this.player.animations.play('fly');
 
     //player initial score of zero
     this.playerScore = 0;
@@ -44,11 +45,16 @@ SpaceHipster.Game.prototype = {
     if(this.game.input.activePointer.justPressed()) {
       
       //move on the direction of the input
+	  this.player.rotation = this.game.physics.arcade.angleToPointer(this.player);
       this.game.physics.arcade.moveToPointer(this.player, this.playerSpeed);
     }
 
     //collision between player and asteroids
     this.game.physics.arcade.collide(this.player, this.asteroids, this.hitAsteroid, null, this);
+	this.game.physics.arcade.collide(this.asteroids);
+	this.asteroids.setAll('body.bounce.x', 1);
+	this.asteroids.setAll('body.bounce.y', 1);
+	
 
     //overlapping between player and collectables
     this.game.physics.arcade.overlap(this.player, this.collectables, this.collect, null, this);
@@ -79,7 +85,7 @@ SpaceHipster.Game.prototype = {
     this.asteroids.enableBody = true;
 
     //phaser's random number generator
-    var numAsteroids = this.game.rnd.integerInRange(150, 200)
+    var numAsteroids = this.game.rnd.integerInRange(10, 20)
     var asteriod;
 
     for (var i = 0; i < numAsteroids; i++) {
