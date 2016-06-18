@@ -91,7 +91,7 @@ SpaceHipster.Game.prototype = {
     for (var i = 0; i < numAsteroids; i++) {
       //add sprite
       asteriod = this.asteroids.create(this.game.world.randomX, this.game.world.randomY, 'rock');
-      asteriod.scale.setTo(this.game.rnd.integerInRange(10, 40)/10);
+      asteriod.scale.setTo(this.game.rnd.integerInRange(2, 20)/10);
 
       //physics properties
       asteriod.body.velocity.x = this.game.rnd.integerInRange(-20, 20);
