@@ -137,10 +137,10 @@ SpaceHipster.Game.prototype = {
 		}
 	},//end generateCollectables**************************************************************
 
-	generateAsteroid: function(rockArray){
+	generateAsteroid: function(){
 			//use a weighted pick to generate a number from the array. The modifier will
 			//help determine how large the rock is and how fast it moves
-			var modifier = this.game.rnd.weightedPick(rockArray);
+			var modifier = this.game.rnd.weightedPick(this.game.global.rockArray);
 			
 			//variable to help prevent rocks spawning on the player at start. It is larger at 
 			//higher levels due to the number of asteroids
@@ -187,8 +187,7 @@ SpaceHipster.Game.prototype = {
 		var astMin;
 		var astMax;
 		
-		//array to be used in the weighted random
-		var rockArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+		
 
 		//set the minimum and maximum asteroids based on game level
 		if (this.game.global.skillLevel == 1){
@@ -209,7 +208,7 @@ SpaceHipster.Game.prototype = {
 		
 		//create the asteroids
 		for (var i = 0; i < numAsteroids; i++){
-			this.generateAsteroid(rockArray);
+			this.generateAsteroid();
 		}
 
 	},//end generateAsteriods*****************************************************************
@@ -257,7 +256,8 @@ SpaceHipster.Game.prototype = {
 	this.scoreLabel = this.game.add.text(this.game.width-50, this.game.height - 50, text, style);
 	this.scoreLabel.fixedToCamera = true;
 	},//end showLabels************************************************************************
-
+	
+	
 	fireBullet: function(){
 		//  To avoid them being allowed to fire too fast we set a time limit	
 		if (this.game.time.now > this.bulletTime)
@@ -267,6 +267,7 @@ SpaceHipster.Game.prototype = {
 
 			if (bullet)
 			{
+
 				//  spawn the bullet next to the player
 				bullet.reset(this.player.x + 10, this.player.y + 4);
 				

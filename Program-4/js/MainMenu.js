@@ -12,7 +12,10 @@ SpaceHipster.MainMenu.prototype = {
    },
   create: function() {
 	this.game.global = {
-		skillLevel: 1	
+		//skill level
+		skillLevel: 1,
+		//array to be used in the weighted random
+		rockArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 	};
   	//show the space tile, repeated
     this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'space');
