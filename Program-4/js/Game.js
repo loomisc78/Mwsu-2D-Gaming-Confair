@@ -57,19 +57,48 @@ SpaceHipster.Game.prototype = {
 		this.bullets.setAll('checkWorldBounds', true);
 		this.bulletTime = 0;
 		
-		//add fire button and have it call fireBullet()
+		//add controls and add fire button and have it call fireBullet()
 		this.cursors = this.game.input.keyboard.createCursorKeys(); 
 		this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		this.fireButton.onDown.add(this.fireBullet, this);
+		this.wasd = {
+			up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+			left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+			right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+		};
 
 	},//end create**********************************************************************
 
 	update: function() {
-		if(this.game.input.activePointer.justPressed()) {		  
-		  //move on the direction of the input
-		  this.player.rotation = this.game.physics.arcade.angleToPointer(this.player);
-		  this.game.physics.arcade.moveToPointer(this.player, this.playerSpeed);
+		//control for player movement
+		if (this.cursors.up.isDown || this.wasd.up.isDown)
+		{
+			this.game.physics.arcade.accelerationFromRotation(this.player.rotation, 
+															200, 
+															this.player.body.acceleration);
 		}
+		else
+		{
+			this.player.body.acceleration.set(0);
+		}
+
+		if (this.cursors.left.isDown || this.wasd.left.isDown)
+		{
+			this.player.body.angularVelocity = -300;
+		}
+		else if (this.cursors.right.isDown || this.wasd.right.isDown)
+		{
+			this.player.body.angularVelocity = 300;
+		}
+		else
+		{
+			this.player.body.angularVelocity = 0;
+		}
+
+		// if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
+		// {
+			// fireBullet();
+		// }
 
 		//collision between player and asteroids or asteroids and other asteroids
 		this.game.physics.arcade.overlap(this.player, this.asteroids, this.hitAsteroid, null, this);
@@ -85,6 +114,7 @@ SpaceHipster.Game.prototype = {
 	},//end update**************************************************************************
 
 	generateCollectables: function() {
+		
 		//add a group of collectables
 		this.collectables = this.game.add.group();
 
@@ -107,6 +137,49 @@ SpaceHipster.Game.prototype = {
 		}
 	},//end generateCollectables**************************************************************
 
+	generateAsteroid: function(rockArray){
+			//use a weighted pick to generate a number from the array. The modifier will
+			//help determine how large the rock is and how fast it moves
+			var modifier = this.game.rnd.weightedPick(rockArray);
+			
+			//variable to help prevent rocks spawning on the player at start. It is larger at 
+			//higher levels due to the number of asteroids
+			var rockGap = this.game.global.skillLevel * 75;
+			
+			//generate a random spawn point for this asteroid
+			var spawn = {
+				x: this.game.world.randomX,
+				y: this.game.world.randomY
+			};
+
+			//if the random spawn point is inside the area set by the center +- the rockGap
+			//a new random spawn point will be created and checked
+			while ((spawn.x >= (this.game.world.centerX - rockGap) && 
+				spawn.x <= (this.game.world.centerX + rockGap)) &&
+				(spawn.y >= (this.game.world.centerY - rockGap) && 
+				spawn.y <= (this.game.world.centerY + rockGap))){
+					spawn.x = this.game.world.randomX;
+					spawn.y = this.game.world.randomY;
+				}
+				
+			//once the spawn has been checked for being in the rock gap, create it
+			var asteriod = this.asteroids.create(spawn.x, spawn.y, 'rock');
+			
+			//scale the asteroid with respect to the weighted modifier 
+			asteriod.scale.setTo(modifier / 7);
+			
+			//set the velocity using the modifier so larger asteroids move slower
+			asteriod.body.velocity.x = (100 / modifier) * this.game.rnd.integerInRange(-2, 2);
+			asteriod.body.velocity.y = (100 / modifier) * this.game.rnd.integerInRange(-2, 2);
+			
+			//set world collision and bounce of the asteroid
+			asteriod.enableBody = true;			
+			asteriod.body.collideWorldBounds = true;
+			asteriod.body.bounce.x = 1;
+			asteriod.body.bounce.y = 1;			
+		
+	},//end generateAsteroid****************************************************************
+	
 	generateAsteriods: function() {
 		this.asteroids = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
 
@@ -133,48 +206,10 @@ SpaceHipster.Game.prototype = {
 		
 		//generate the number of asteroids
 		var numAsteroids = this.game.rnd.integerInRange(astMin, astMax);
-		var asteriod;
-
+		
 		//create the asteroids
 		for (var i = 0; i < numAsteroids; i++){
-			//use a weighted pick to generate a number from the array. The modifier will
-			//help determine how large the rock is and how fast it moves
-			var modifier = this.game.rnd.weightedPick(rockArray);
-			
-			//variable to help prevent rocks spawning on the player at start. It is larger at 
-			//higher levels due to the number of asteroids
-			var rockGap = this.game.global.skillLevel * 75;
-			
-			//generate a random spawn point for this asteroid
-			var spawn = {
-				x: this.game.world.randomX,
-				y: this.game.world.randomY
-			};
-
-			//if the random spawn point is inside the area set by the center +- the rockGap
-			//a new random spawn point will be created and checked
-			while ((spawn.x >= (this.game.world.centerX - rockGap) && 
-				spawn.x <= (this.game.world.centerX + rockGap)) &&
-				(spawn.y >= (this.game.world.centerY - rockGap) && 
-				spawn.y <= (this.game.world.centerY + rockGap))){
-					spawn.x = this.game.world.randomX;
-					spawn.y = this.game.world.randomY;
-				}
-				
-			//once the spawn has been checked for being in the rock gap, create it
-			asteriod = this.asteroids.create(spawn.x, spawn.y, 'rock');
-			
-			//scale the asteroid with respect to the weighted modifier 
-			asteriod.scale.setTo(modifier / 7);
-			
-			//set the velocity using the modifier so larger asteroids move slower
-			asteriod.body.velocity.x = (100 / modifier) * this.game.rnd.integerInRange(-2, 2);
-			asteriod.body.velocity.y = (100 / modifier) * this.game.rnd.integerInRange(-2, 2);
-			
-			//set world collision and bounce of the asteroid
-			asteriod.body.collideWorldBounds = true; 
-			asteriod.body.bounce.x = 1;
-			asteriod.body.bounce.y = 1;
+			this.generateAsteroid(rockArray);
 		}
 
 	},//end generateAsteriods*****************************************************************
