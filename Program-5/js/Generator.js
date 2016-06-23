@@ -16,8 +16,7 @@ BasicGame.Generator.prototype = {
             tileHgt: 12,
             mapPixWth: this.game.width,
             mapPixHgt: this.game.height
-        };
-        
+        };      
         
         
         //the number of tiles for the width and height
@@ -57,14 +56,15 @@ BasicGame.Generator.prototype = {
     
     defineMap: function(){
         //fill the map with 0
-        for (var x = 0; x < this.mapSizeH; x++){
-            this.map[x] = [];
-            for (var y = 0; y < this.mapSizeW; y++)
+        for (var row = 0; row < this.mapSizeH; row++){
+            this.map[row] = [];
+            for (var col = 0; col < this.mapSizeW; col++)
                 {
-                    this.map[x][y] = 0;
+                    this.map[row][col] = 0;
                 }            
         } 
         this.consoleMap();
+		
         //minimum room size, maximum room size, and the number of times a room has failed 
         //to place because of overlapping
         var minRoom = 5;
@@ -127,7 +127,7 @@ BasicGame.Generator.prototype = {
                     else 
                         pointB.rowB++;
                 }
-                console.log(this.map[pointB.rowB][pointB.colB]);
+                //console.log(this.map[pointB.rowB][pointB.colB]);
                 //console.log(pointB.rowB + " " + pointB.colB);
                 this.map[pointB.rowB][pointB.colB] = 1;
             }
