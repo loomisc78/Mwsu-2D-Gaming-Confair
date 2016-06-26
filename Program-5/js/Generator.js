@@ -20,11 +20,11 @@ BasicGame.Generator.prototype = {
         
         
         //the number of tiles for the width and height
-        this.mapSizeW = this.mapProp.mapPixWth / this.mapProp.tileWth;
-        this.mapSizeH = this.mapProp.mapPixHgt / this.mapProp.tileHgt;
+        this.mapSizeCols = this.mapProp.mapPixWth / this.mapProp.tileWth;
+        this.mapSizeRows = this.mapProp.mapPixHgt / this.mapProp.tileHgt;
         
-        console.log(this.mapSizeW);
-        console.log(this.mapSizeH);
+        console.log(this.mapSizeCols);
+        console.log(this.mapSizeRows);
                 
         //create a 2d array to hold the tile map
         this.map = [];
@@ -39,14 +39,20 @@ BasicGame.Generator.prototype = {
         //array to hold the rooms
         this.rooms = [];        
         
-        this.defineMap();        
+        this.defineMap();
+		this.consoleMap();
+		
+		
+		
     },//end preload*************************************************************************
-    
+		
     create: function (){
+
     
     },//end create*************************************************************************
         
     update: function (){
+		this.state.start('MainMenu');
     
     },//end update*************************************************************************
         
@@ -56,14 +62,13 @@ BasicGame.Generator.prototype = {
     
     defineMap: function(){
         //fill the map with 0
-        for (var row = 0; row < this.mapSizeH; row++){
+        for (var row = 0; row < this.mapSizeRows; row++){
             this.map[row] = [];
-            for (var col = 0; col < this.mapSizeW; col++)
+            for (var col = 0; col < this.mapSizeCols; col++)
                 {
                     this.map[row][col] = 0;
-                }            
+                }
         } 
-        this.consoleMap();
 		
         //minimum room size, maximum room size, and the number of times a room has failed 
         //to place because of overlapping
@@ -76,8 +81,8 @@ BasicGame.Generator.prototype = {
             var room = {};
             
             //generate random values for x, y, width and height
-            room.x = this.game.rnd.integerInRange(1, this.mapSizeW - maxRoom - 1);
-            room.y = this.game.rnd.integerInRange(1, this.mapSizeH - maxRoom - 1);
+            room.x = this.game.rnd.integerInRange(1, this.mapSizeCols - maxRoom - 1);
+            room.y = this.game.rnd.integerInRange(1, this.mapSizeRows - maxRoom - 1);
             room.width = this.game.rnd.integerInRange(minRoom, maxRoom);
             room.height = this.game.rnd.integerInRange(minRoom, maxRoom);
             
@@ -104,63 +109,63 @@ BasicGame.Generator.prototype = {
             
             //pick a random point in room A
             pointA = {
-                colA: this.game.rnd.integerInRange(roomA.x, roomA.x + roomA.width),
-                rowA: this.game.rnd.integerInRange(roomA.y, roomA.y + roomA.height)
+                x: this.game.rnd.integerInRange(roomA.x, roomA.x + roomA.width),
+                y: this.game.rnd.integerInRange(roomA.y, roomA.y + roomA.height)
             };
-            
+			
             //pick a random point in room B
             pointB = {
-                colB: this.game.rnd.integerInRange(roomB.x, roomB.x + roomB.width),
-                rowB: this.game.rnd.integerInRange(roomB.y, roomB.y + roomB.height)
-            };
+                x: this.game.rnd.integerInRange(roomB.x, roomB.x + roomB.width),
+                y: this.game.rnd.integerInRange(roomB.y, roomB.y + roomB.height)
+            }; 
+
             
             //move along the line from pointA to pointB putting 1 in each location along the way
-            while ((pointB.colB != pointA.colA) || (pointB.rowB != pointA.rowA)){
-                if (pointB.rowB != pointA.rowA) {
-                    if (pointB.colB > pointA.colA) 
-                        pointB.colB--;
+            while ((pointB.x != pointA.x) || (pointB.y != pointA.y)){
+                
+				if (pointB.x != pointA.x) {
+                    if (pointB.x > pointA.x) 
+                        pointB.x--;
                     else 
-                        pointB.colB++;
-                } else if (pointB.rowB != pointA.rowA) {
-                    if (pointB.rowB > pointA.rowA) 
-                        pointB.rowB--;
+                        pointB.x++;
+                } else if (pointB.y != pointA.y) {
+                    if (pointB.y > pointA.y) 
+                        pointB.y--;
                     else 
-                        pointB.rowB++;
+                        pointB.y++;
                 }
-                //console.log(this.map[pointB.rowB][pointB.colB]);
-                //console.log(pointB.rowB + " " + pointB.colB);
-                this.map[pointB.rowB][pointB.colB] = 1;
-            }
+                this.map[pointB.y][pointB.x] = 1;
+            } 
         }
         
         //loop through the rooms and assign each square to 1 of each room to set the room floors
         for (i = 0; i < this.rooms.length; i++) {
             var room = this.rooms[i];
-            for (var x = room.x; x < room.x + room.width; x++) {
-                for (var y = room.y; y < room.y + room.height; y++) {
-                    this.map[x][y] = 1;
+            for (var y = room.y; y < room.y + room.height; y++) {
+                for (var x = room.x; x < room.x + room.width; x++) {
+                    this.map[y][x] = 1;
                 }
             }
         }
         
         //loop through the map and set walls, for each square that has a 1 place a 2 in any adjacent 
         //square that has 0
-        for (var x = 0; x < this.mapSizeH; x++) {
-            for (var y = 0; y < this.mapSizeW; y++) {
-                if (this.map[x][y] == 1) {
-                    for (var xx = x - 1; xx <= x + 1; xx++) {
-                        for (var yy = y - 1; yy <= y + 1; yy++) {
-                            if (this.map[xx][yy] == 0) this.map[xx][yy] = 2;
+        for (var y = 0; y < this.mapSizeRows; y++) {
+			for (var x = 0; x < this.mapSizeCols; x++) {
+                if (this.map[y][x] == 1) {
+                    for (var yy = y - 1; yy <= y + 1; yy++) {
+                        for (var xx = x - 1; xx <= x + 1; xx++) {
+                            if (this.map[yy][xx] == 0) 
+								this.map[yy][xx] = 2;
                         }
                     }
                 }
             }
         }
-        this.consoleMap();
         console.log(this.map);
     },//end defineMap*********************************************************************
     
-    doesCollide(room){
+    doesCollide: function(room){
         //loop through the rooms looking for one overlapping x and/or y values
         for (var i = 0; i < this.rooms.length; i++) {
             var check = this.rooms[i];
@@ -174,7 +179,7 @@ BasicGame.Generator.prototype = {
 
     },//end doesCollide********************************************************************
     
-    findClosestRoom(room){
+    findClosestRoom: function(room){
         var mid = {
             x: room.x + (room.width / 2),
             y: room.y + (room.height / 2)
@@ -206,8 +211,8 @@ BasicGame.Generator.prototype = {
     },//end findClosestRoom*****************************************************************
     
     consoleMap: function(){
-            var rows = this.mapSizeH;
-            var cols = this.mapSizeW;
+            var rows = this.mapSizeRows;
+            var cols = this.mapSizeCols;
             var line = "";
             for (var r = 0; r < rows; r++) {
                 line = "";
