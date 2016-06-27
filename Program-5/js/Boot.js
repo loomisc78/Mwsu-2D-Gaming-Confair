@@ -1,4 +1,11 @@
-var BasicGame = {};
+var BasicGame = {
+	//the game map
+	map: [],
+	
+	//map sizes in tiles
+	mapSizeCols: null,
+    mapSizeRows: null 
+};
 
 BasicGame.Boot = function (game) {
 
@@ -40,7 +47,7 @@ BasicGame.Boot.prototype = {
 
     },
 
-    create: function () {
+    create: function () { 
         
         //  By this point the preloader assets have loaded to the cache, we've set the game settings
         //  So now let's start the real preloader going

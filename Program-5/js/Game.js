@@ -28,7 +28,44 @@ BasicGame.Game = function (game) {
 BasicGame.Game.prototype = {
 
     create: function () {
-	
+		console.log(this.state.current); 
+		var mapData = '';
+		
+		for (var row = 0; row < BasicGame.mapSizeRows; row ++){
+			
+			for (var col = 0; col < BasicGame.mapSizeCols; col ++){
+				
+				mapData += BasicGame.map[row][col].toString();
+				
+				if (col < BasicGame.mapSizeCols - 1){
+					mapData += ',';
+				}
+			}
+			
+			if (row < BasicGame.mapSizeRows - 1){
+				mapData += "\n";
+			}
+		}
+		
+		//  Add data to the cache
+		this.game.cache.addTilemap('dynamicMap', null, mapData, Phaser.Tilemap.CSV);
+
+		//  Create our map (the 12x12 is the tile size)
+		floor = this.game.add.tilemap('dynamicMap', 12, 12);
+
+		//  'tileset' = cache image key, 12x12 = tile size
+		floor.addTilesetImage('tileset', 'tileset', 12, 12);
+
+		//  0 is important
+		layer = floor.createLayer(0);
+
+		//  Scroll it
+		layer.resizeWorld();
+
+		this.game.physics.startSystem(Phaser.Physics.ARCADE);
+		
+		floor.setCollision([0,2]);
+			
     },
 
     update: function () {

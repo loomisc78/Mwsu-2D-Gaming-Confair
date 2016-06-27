@@ -35,7 +35,7 @@ BasicGame.Preloader.prototype = {
 	},
 
 	create: function () {
-
+		
 		//	Once the load has finished we disable the crop because we're going to sit in the update loop for a short while as the music decodes
 		this.preloadBar.cropEnabled = false;
 
@@ -55,7 +55,7 @@ BasicGame.Preloader.prototype = {
 		if (this.cache.isSoundDecoded('titleMusic') && this.ready == false)
 		{
 			this.ready = true;
-			this.state.start('Generator');
+			this.state.start('Generator'); 
 		}
 
 	}
