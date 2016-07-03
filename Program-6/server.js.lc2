@@ -9,7 +9,7 @@ var Eureca = require('eureca.io');
 
 
 //create an instance of EurecaServer
-var eurecaServer = new Eureca.Server({allow:['setId', 'spawnEnemy', 'kill','updateState']});
+var eurecaServer = new Eureca.Server({allow:['setId', 'spawnEnemy', 'kill', 'updateState']});
 
 var players = {};
  
@@ -51,10 +51,10 @@ eurecaServer.onDisconnect(function (conn) {
 * Player logs itself into the array of players (handshake still needs to be called
 * to do the update. That's done on the client right after). 
 */
-eurecaServer.exports.initPlayer = function (id,state) {
-    console.log(state);
+eurecaServer.exports.initPlayer = function (id, state) {
+    console.log('Init State" ', state);
     
-    players[id].state=state;
+    players[id].state = state;
 }
 
 /**
@@ -62,17 +62,18 @@ eurecaServer.exports.initPlayer = function (id,state) {
 * whenever it wants. 
 * This method turns around and sends out player states to everyone. 
 */
-eurecaServer.exports.handleState = function (id,state) {
-    console.log(id,state);
+eurecaServer.exports.handleState = function (id, state) {
+    //console.log(id,state);
     
     players[id].state = state;
     	
 	for (var c in players)
 	{
 		var remote = players[c].remote;
-		
-		remote.updateState(id, state);
-		
+		for (var cc in players){
+			
+			remote.updateState(players[cc].id, players[cc].state);
+		}
 	}
 }
 
@@ -86,15 +87,13 @@ eurecaServer.exports.handshake = function()
 	{
 		var remote = players[c].remote;
 		for (var cc in players)
-		{	
-			//send latest known position
-			var x = players[cc].laststate ? players[cc].laststate.x:  0;
-			var y = players[cc].laststate ? players[cc].laststate.y:  0;
-			
-			remote.spawnEnemy(players[cc].id, players[cc].state, x, y);		
+		{		
+			remote.spawnEnemy(players[cc].id, players[cc].state );		
 		}
 	}
 }
+
+
 
 
 app.get('/', function (req, res, next) {

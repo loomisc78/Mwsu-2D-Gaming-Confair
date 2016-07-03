@@ -18,7 +18,7 @@ eurecaServer.attach(server);
 
 //detect client connection
 eurecaServer.onConnect(function (conn) {    
-    console.log('New Client id=%s ', conn.id, conn.remoteAddress);
+    //console.log('New Client id=%s ', conn.id, conn.remoteAddress);
 	
 	//the getClient method provide a proxy allowing us to call remote client functions
     var remote = eurecaServer.getClient(conn.id);    
@@ -51,10 +51,10 @@ eurecaServer.onDisconnect(function (conn) {
 * Player logs itself into the array of players (handshake still needs to be called
 * to do the update. That's done on the client right after). 
 */
-eurecaServer.exports.initPlayer = function (id,state) {
+eurecaServer.exports.initPlayer = function (id, state) {
     console.log(state);
     
-    players[id].state=state;
+    players[id] = state;
 }
 
 /**
@@ -62,17 +62,16 @@ eurecaServer.exports.initPlayer = function (id,state) {
 * whenever it wants. 
 * This method turns around and sends out player states to everyone. 
 */
-eurecaServer.exports.handleState = function (id,state) {
-    console.log(id,state);
-    
-    players[id].state = state;
+eurecaServer.exports.handleState = function (id, state) {
+    //console.log(id, state);
+	console.log("In handleSate");
+	    
+    players[id]= state;
     	
 	for (var c in players)
 	{
 		var remote = players[c].remote;
-		
-		remote.updateState(id, state);
-		
+		remote.updateStates(id, state);		
 	}
 }
 
@@ -84,17 +83,18 @@ eurecaServer.exports.handshake = function()
     console.log("handshake");
 	for (var c in players)
 	{
+		console.log(c);
 		var remote = players[c].remote;
 		for (var cc in players)
-		{	
-			//send latest known position
-			var x = players[cc].laststate ? players[cc].laststate.x:  0;
-			var y = players[cc].laststate ? players[cc].laststate.y:  0;
-			
-			remote.spawnEnemy(players[cc].id, players[cc].state, x, y);		
+		{		
+			remote.spawnEnemy(players[cc].id, players[cc].state);		
 		}
 	}
 }
+
+
+
+
 
 
 app.get('/', function (req, res, next) {

@@ -19,8 +19,7 @@ var playState = {
     */
     update: function() {
     	if (!game.global.dude) 
-    	    return;
-    	    
+    	    return;  	    
         
         game.global.dude.update();
 
@@ -31,7 +30,7 @@ var playState = {
     * and bind some keys to variables
     */
     create: function(){
-        this.initMultiPlayer(game,game.global);
+        this.initMultiPlayer(game, game.global);
         
         this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
@@ -42,7 +41,7 @@ var playState = {
     /**
     * Handles communication with the server
     */
-    initMultiPlayer: function(game,globals){
+    initMultiPlayer: function(game, globals){
         
         // Reference to our eureca so we can call functions back on the server
         var eurecaProxy;
@@ -78,13 +77,13 @@ var playState = {
             globals.myId = id;
             
             // Create new "dude"
-            globals.dude = new player(id, game,eurecaProxy);
+            globals.dude = new Player(id, game, eurecaProxy);
             
             // Put instance of "dude" into list
-            globals.playerList[id] = globals.dude.state;
+            globals.playerList[id] = globals.dude;
             
             //Send state to server
-            eurecaProxy.initPlayer(id,globals.dude.state);
+            eurecaProxy.initPlayer(id, globals.dude.state);
             
             // debugging
             console.log(globals.playerList);
@@ -103,7 +102,7 @@ var playState = {
         */
         this.client.exports.kill = function(id){	
             if (globals.playerList[id]) {
-                globals.playerList[id].kill();
+                //globals.playerList[id].kill();
                 console.log('killing ', id, globals.playerList[id]);
             }
         }	
@@ -111,7 +110,7 @@ var playState = {
         * This is called from the server to spawn enemy's in the local game
         * instance.
         */
-        this.client.exports.spawnEnemy = function(id, enemy_state){
+        this.client.exports.spawnEnemy = function(id, enemy_state, x, y){
             
             if (id == globals.myId){
                 return; //this is me
@@ -119,12 +118,20 @@ var playState = {
             
             //if the id doesn't exist in your local table
             // then spawn the enemy
-
-            console.log('Spawning New Player');
-            
-            console.log(enemy_state);
+			console.log('player list : ', globals.playerList);
+			
+			console.log('Spawning New Player');
+			if(!globals.playerList[id]){
+				var newDude = new Player(id, game);
+				newDude.sprite.tint = enemy_state.tint;
+				globals.playerList[id] = newDude;
+			}
+						
+		
+            console.log('enemy state: ', id, enemy_state);
+			//console.log(newPlayer);
     
-            globals.playerList[id] = enemy_state;
+            //globals.playerList[id] = enemy_state;
             
             console.log(globals.playerList);
 
@@ -134,8 +141,8 @@ var playState = {
         * This is called from the server to update a particular players
         * state. 
         */       
-        this.client.exports.updateState = function(id,player_state){
-            console.log(id,player_state);
+        this.client.exports.updateState = function(id, player_state){
+            //console.log(id, player_state);
             
             // Don't do anything if its me
             if(globals.myId == id){
@@ -144,13 +151,13 @@ var playState = {
             
             // If player exists, update that players state. 
             if (globals.playerList[id])  {
-                globals.playerList[id].state = player_state;
+                globals.playerList[id].sprite.x = player_state.x;
+				globals.playerList[id].sprite.y = player_state.y;
             }
             
             //now how do we update everyone??
-         }
-         
-        
+			
+		}        
     },
     /**
     * Not used
@@ -166,115 +173,178 @@ var playState = {
     },
 };
 
-var player = function (index, game,proxyServer) {
+function Player(index, game, proxyServer) {
     
-    var x;                      // x coord
-    var y;                      // y coord
-    
-    var player_id;
-    
-    var alive;                  // player alive or dead
-    var state;                  // state info about player
-    var proxy;                  // reference to proxy server
-    
-    var tint;                   // player tint
+    this.x = 0;
+    this.y = 0;
+    this.old_x = this.x;
+    this.old_y = this.y;
 
-    var upKey;                  //references to movement keys
-    var downKey;
-    var leftKey;
-    var rightKey;
+    this.game = game;
+    
+    this.player_id = index;
+    
+    
+    this.alive = true;                  // player alive or dead
 
-    var health;                 // player health 
-    var startTime;              // starting game time     
- 
+    this.proxy = proxyServer;                  // reference to proxy server
+    
+    this.tint = Math.random() * 0xffffff;                   // player tint
 	
-    function init(index, game,proxyServer){
-    
-        player_id = index;
-    
-        proxy = proxyServer;
-    
-        sprite = game.add.sprite(x, y, 'dude');
-    
-        upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-        downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-        leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-        rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
-        health = 30;
+    this.sprite = this.game.add.sprite(this.x, this.y, 'dude');
+	this.sprite.tint = this.tint;
+
+    this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+    this.state = {alive : true, 
+				tint: this.tint,
+				x : this.x,
+				y : this.y};             // state info about player
+
+    this.health = 30;                                                               // player health 
+    this.startTime = this.game.time.time;;                                          // starting game time  
+
+}
+
+
+Player.prototype.update = function() {
+		this.state.tint = this.tint;
+		this.state.x = this.sprite.x;
+        this.state.y = this.sprite.y;
+        this.state.alive = this.alive;
+        this.state.health = this.health;
+    
+        // Send your own state to server on your update and let
+        // it do whatever with it. 
+        this.proxy.handleState(this.player_id, this.state);
+
+        if (this.upKey.isDown)
+        {
+            this.sprite.y-=3;
+        }
+        else if (this.downKey.isDown)
+        {
+            this.sprite.y+=3;
+        }
+
+        if (this.leftKey.isDown)
+        {
+            this.sprite.x-=3;
+        }
+        else if (this.rightKey.isDown)
+        {
+            this.sprite.x+=3;
+        } 
+    
+        this.old_x = this.sprite.x;
+        this.old_y = this.sprite.y;
+};
+
+
+Player.prototype.render = function() {
+
+};
+
+Player.prototype.kill = function() {
+    this.alive = false;
+    this.sprite.kill();
+};
+/* function player(index, game, proxyServer) {
+
+	
+    player.prototype.init = function(index, game, proxyServer){
+    
+		this.game = game;
+		
+        this.player_id = index;
+    
+        this.proxy = proxyServer;
+    
+        this.sprite = this.game.add.sprite(this.x, this.y, 'dude');
+    
+        this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+        this.health = 30;
 	    
-        state = {};
-        x = 0;
-        y = 0;
-        alive = true;
-        tint = Math.random() * 0xffffff;
-        sprite.tint = tint;
-        sprite.id = index;
-        state.alive = true;
-        startTime = game.time.time;
+        this.state = {alive:true, tint:this.tint, x:this.x, y:this.y};
+        this.x = 0; 
+        this.y = 0;
+        this.alive = true;
+        this.tint = Math.random() * 0xffffff;
+		this.sprite.tint = this.tint;
+        this.sprite.id = index;
+        this.state.alive = true;
+        this.startTime = this.game.time.time;
         
     };
     
     // Part of your assignment 
     // you need to 
-    function updateState (enemy_id,state){
-        if(game.time.time - startTime > 2000){
+    player.prototype.updateState = function (enemy_id, state){
+        if(this.game.time.time - this.startTime > 2000){
             console.log(game.time.time);
-            for(s in state){
-                console.log(state[s]);
+            for(s in this.state){
+                console.log(this.state[s]);
             }
-            startTime = game.time.time;
+            this.startTime = this.game.time.time;
         }
     };
 
-    function update() {
-        state.tint = tint;
-        state.x = sprite.x;
-        state.y = sprite.y;
-        state.alive = alive;
-        state.health = health;
+    player.prototype.update = function () {
+        this.state.tint = this.tint;
+        this.state.x = this.sprite.x;
+        this.state.y = this.sprite.y;
+        this.state.alive = this.alive;
+        this.state.health = this.health;
     
         // Send your own state to server on your update and let
         // it do whatever with it. 
-        proxy.handleState(player_id,state);
+        this.proxy.handleState(this.player_id, this.state);
 
-        if (upKey.isDown)
+        if (this.upKey.isDown)
         {
-            sprite.y-=3;
+            this.sprite.y-=3;
         }
-        else if (downKey.isDown)
+        else if (this.downKey.isDown)
         {
-            sprite.y+=3;
+            this.sprite.y+=3;
         }
 
-        if (leftKey.isDown)
+        if (this.leftKey.isDown)
         {
-            sprite.x-=3;
+            this.sprite.x-=3;
         }
-        else if (rightKey.isDown)
+        else if (this.rightKey.isDown)
         {
-            sprite.x+=3;
+            this.sprite.x+=3;
         } 
     
-        old_x = sprite.x;
-        old_y = sprite.y;
+        this.old_x = sprite.x;
+        this.old_y = sprite.y;
     };
     
-    function render() {
-        game.debug.text( "This is debug text", 100, 380 );
+    player.prototype.render = function() {
+        this.game.debug.text( "This is debug text", 100, 380 );
     };
 
-    function kill() {
-        alive = false;
-        sprite.kill();
+    player.prototype.kill = function() {
+        this.alive = false;
+        this.sprite.kill();
     };
     
-    init(index, game,proxyServer);
+    this.init(index, game, proxyServer);
     
     return {
-        render : render,
-        updateState : updateState,
-        update : update,
-        kill : kill
+        render : this.render,
+        updateState : this.updateState,
+        update : this.update,
+        kill : this.kill
     };
-};
+}; */
