@@ -8,7 +8,7 @@
         <script type="text/javascript" src="js/PreLoader.js"></script>
         <script type="text/javascript" src="js/MainMenu.js"></script>
         <script type="text/javascript" src="js/Level1.js"></script>
-		<script type="text/javascript" src="js/Level2.js"></script>
+		<script type="text/javascript" src="js/Level2.js"></script> 
     </head>
     <body>
         <p> Program 7 </p>
@@ -17,13 +17,13 @@
 	
 	<script type="text/javascript">
 	(function () {
-	  var game = new Phaser.Game(900, 720, Phaser.AUTO, 'game');
+	  var game = new Phaser.Game(800, 620, Phaser.AUTO, 'game');
 	  // Add the game States; could be done in Boot but just as easy here
 	  game.state.add('Boot', BasicGame.Boot);
 	  game.state.add('Preloader', BasicGame.Preloader);
 	  game.state.add('MainMenu', BasicGame.MainMenu);
-	  game.state.add('Game', BasicGame.Level1);
-	  game.state.add('Game2',BasicGame.Level2);
+	  game.state.add('Level1', BasicGame.Level1);
+	  game.state.add('Level2',BasicGame.Level2);
 	  // Now start the Boot state.
 	  game.state.start('Boot');
 	})();

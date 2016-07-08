@@ -2,7 +2,7 @@ BasicGame.MainMenu = function(game) {
 
 };
 
-BasicGame.MainMenu.prototype = {
+BasicGame.MainMenu.prototype = { 
 	create: function() {
         // Add a background image
         this.sky = this.game.add.image(0, 0, 'sky');
@@ -14,7 +14,7 @@ BasicGame.MainMenu.prototype = {
 										'Monkey Dash', 
 										{ font: '50px Orbitron', fill: '#ffffff' });
 		this.game.add.tween(this.nameLabel).
-							to({y: 120}, 1000).
+							to({y: 240}, 1000).
 							easing(Phaser.Easing.Bounce.Out).
 							start();
 		this.nameLabel.anchor.setTo(0.5, 0.5);
@@ -46,17 +46,11 @@ BasicGame.MainMenu.prototype = {
         this.scoreLabel.anchor.setTo(0.5, 0.5);
         
         // Explain how to start the game
-        // Store the relevant text based on the device used
-        var text;
-        if (this.game.device.desktop) {
-            text = 'press the up arrow key to start';
-        }
-        else {
-            text = 'touch the screen to start';
-        }
+        var text = 'press the up arrow key to start';
+        
         // Display the text variable
         this.startLabel = this.game.add.text(this.game.width/2, 
-											this.game.height-80, 
+											this.game.height - 240, 
 											text, 
 											{ font: '25px Orbitron', fill: '#ffffff' }); 
         this.startLabel.anchor.setTo(0.5, 0.5);
@@ -65,22 +59,14 @@ BasicGame.MainMenu.prototype = {
         // When pressed, call the 'start' function once
         this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
         this.upKey.onDown.add(this.start, this);
-        
-        if (!this.game.device.desktop) {
-            this.game.input.onDown.add(this.start, this);
-        }
     },
 	
     start: function() {
 		BasicGame.score = 0;
+		BasicGame.startTime = this.game.time.now;
         
-        // If we tap in the top left corner of the game on mobile
-        if (!this.game.device.desktop && this.game.input.y < 50 && this.game.input.x < 60) {
-            // It means we want to mute the game, so we don't start the game
-            return;
-        }
 		// Start the actual game
-        this.game.state.start('play');
+        this.game.state.start('Level1');
     },
 	
 	// Function called when the 'muteButton' is pressed

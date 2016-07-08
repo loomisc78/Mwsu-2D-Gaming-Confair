@@ -1,17 +1,20 @@
 BasicGame = {
 
-  score: 0,
+	gameTime: 0, //extra time added each time you get a banana
+	
+	runTime: 0,  //the running time
 
-  life: 200
-
-};
+	score: 0,	//the global player score	
+	
+	life: 200
+};//end BasicGame*************************************************************
 
 BasicGame.Boot = function(game) {
 };
 
 BasicGame.Boot.prototype = {
 
-	init: function() {
+	init: function() { 
 
 	},
 
@@ -19,7 +22,6 @@ BasicGame.Boot.prototype = {
 
 		// Load the image
 		this.game.load.image('progressBar', 'assets/progressBar.png');
-
 	},
 
 	create: function() {
@@ -52,7 +54,6 @@ BasicGame.Boot.prototype = {
 		this.game.state.start('Preloader');
 	},
 };
-
 
 
 

@@ -6,7 +6,7 @@ BasicGame.Preloader = function (game) {
 
 };
 
-BasicGame.Preloader.prototype = {
+BasicGame.Preloader.prototype = { 
 
 	preload: function () {
 
@@ -18,7 +18,7 @@ BasicGame.Preloader.prototype = {
 		this.loadingLabel.anchor.setTo(0.5, 0.5);
 
 		// Display the progress bar
-		this.progressBar = this.game.add.sprite(this.game.width/2, 200, 'progressBar');
+		this.progressBar = this.game.add.sprite(this.game.width/2, 300, 'progressBar');
 		this.progressBar.anchor.setTo(0.5, 0.5);
 		this.game.load.setPreloadSprite(this.progressBar);
 
@@ -30,7 +30,7 @@ BasicGame.Preloader.prototype = {
 		this.game.load.spritesheet('mute', 'assets/muteButton.png', 28, 22);	
 
 		// Load the tileset information
-		this.game.load.image('tileset', 'assets/jungle_set.png');
+		this.game.load.image('jungle_set', 'assets/jungle_set.png');
 		this.game.load.tilemap('level1', 'assets/jungle_lv1.json', null, Phaser.Tilemap.TILED_JSON);
 		this.game.load.tilemap('level2', 'assets/jungle_lv2.json', null, Phaser.Tilemap.TILED_JSON);
 
@@ -49,6 +49,28 @@ BasicGame.Preloader.prototype = {
 	},//end preload******************************************************
   
 	create: function() {
+		//add sounds into the game
+		BasicGame.jumpSound = this.game.add.audio('jump');
+		BasicGame.bananaSound = this.game.add.audio('banana');
+		BasicGame.deadSound = this.game.add.audio('dead');
+		
+		// Add and start the music in the 'create' function of the play.js file
+		// Because we want to play the music when the play state starts
+		BasicGame.music = this.game.add.audio('music'); // Add the music
+		BasicGame.music.loop = true; // Make it loop
+		
+
+        //set keys for game play
+		BasicGame.leftArrow = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+		BasicGame.rightArrow = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+		BasicGame.upArrow = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+        
+		BasicGame.wasd = {
+			up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+			left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+			right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+		};
+		
         // Go to the menu state
         this.game.state.start('MainMenu');
     },	
